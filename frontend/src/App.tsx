@@ -1,22 +1,24 @@
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Home from "src/views/Home";
+import Chats from "src/views/Chats";
+import PageNotFound from "src/views/PageNotFound";
+
+import AppLayout from "src/components/Layout";
+
+import routes from "src/constants/routes";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p className="underline">
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path={routes.HOME} element={<AppLayout />}>
+          <Route index element={<Home />} />
+          <Route path={routes.CHATS} element={<Chats />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
