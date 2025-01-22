@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "src/views/Home";
 import Chats from "src/views/Chats";
+import Auth from "src/views/Auth";
 import PageNotFound from "src/views/PageNotFound";
 
 import AppLayout from "src/components/Layout";
@@ -17,6 +18,7 @@ function App() {
           <Route path={routes.CHATS} element={<Chats />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
+        <Route path={routes.AUTH} element={<Auth />} />
       </Routes>
     </BrowserRouter>
   );
