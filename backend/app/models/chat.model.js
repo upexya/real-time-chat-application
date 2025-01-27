@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const chatModel = mongoose.model(
+const chatModel = mongoose.Schema(
   {
     chat_name: {
       type: String,

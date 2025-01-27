@@ -12,6 +12,12 @@ const userSchema = mongoose.Schema(
       required: true,
       trim: true,
       unique: true,
+      validate: {
+        validator: v => {
+          return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(v);
+        },
+        message: (props) => `${props.value} is not a valid email!`,
+      },
     },
     password: {
       type: String,
@@ -19,7 +25,8 @@ const userSchema = mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png",
+      default:
+        "https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png",
     },
   },
   {
