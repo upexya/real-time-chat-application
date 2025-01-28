@@ -1,10 +1,13 @@
-const routes = require("../constants/routes");
+const express = require("express");
+const router = express.Router();
+
+const { chat_routes } = require("../constants/routes");
 const chat_controller = require("../controller/chat.controller");
 
-module.exports = (app) => {
-  // Retrieve all chat
-  app.get(routes.GET_ALL_CHAT, chat_controller.findAll);
+// Retrieve all chat
+router.get(chat_routes.GET_ALL_CHAT, chat_controller.findAll);
 
-  // Retrieve a single chat with chatid
-  app.get(routes.GET_SINGLE_CHAT, chat_controller.findOne);
-};
+// Using router.route we can chain various methods to a single route.
+router.route(chat_routes.GET_SINGLE_CHAT).get(chat_controller.findOne);
+
+module.exports = router;

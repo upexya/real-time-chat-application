@@ -1,6 +1,15 @@
-const routes = {
-    GET_ALL_CHAT: '/chat',
-    GET_SINGLE_CHAT: '/chat/:chat_id'
-}
+const chat_routes = {
+  GET_ALL_CHAT: "/",
+  GET_SINGLE_CHAT: "/:chat_id",
+};
 
-module.exports = routes;
+const auth_routes = {
+  REGISTER: "/register",
+  LOGIN: "/login",
+  LOGOUT: "/logout",
+};
+
+module.exports = {
+  chat_routes,
+  auth_routes,
+};
