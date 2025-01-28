@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const port = process.env.PORT || 3001;
 
+// connect to database
 const connectDb = require("./app/config/db");
 connectDb();
 
@@ -22,6 +23,10 @@ const auth_router = require("./app/routes/auth.routes");
 app.use("/chat", chat_router);
 app.use("/auth", auth_router);
 
+// error handling middleware
+const {errorHandler, notFound} = require("./app/middleware/error.middleware");
+app.use(notFound);
+app.use(errorHandler);
 
 // listen for requests
 app.listen(port, () => {

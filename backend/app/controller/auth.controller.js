@@ -1,6 +1,5 @@
 const User = require("../models/user.model");
 const generateToken = require("../utils/generateJwtToken");
-const { hashPassword, verifyPassword } = require("../utils/passwordHash");
 
 exports.registerUser = async (req, res) => {
   const { name, email, password, avatar } = req.body;
@@ -14,12 +13,10 @@ exports.registerUser = async (req, res) => {
     return res.status(400).send("User already exists");
   }
 
-  const hashed_password = await hashPassword(password);
-
   const user = await User.create({
     name,
     email,
-    password: hashed_password,
+    password,
     avatar,
   });
   if (user) {
@@ -30,4 +27,27 @@ exports.registerUser = async (req, res) => {
   } else {
     return res.status(400).send("Invalid user data");
   }
+};
+
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send("Please provide all required fields");
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(400).send("User does not exist");
+  }
+
+  const is_password_valid = await user.verifyPassword(password);
+  if (!is_password_valid) {
+    return res.status(400).send("Invalid credentials");
+  }
+
+  const token = generateToken(user._id);
+  const { password: _, __v, ...rest } = user._doc;
+
+  return res.status(200).json({ ...rest, token });
 };
