@@ -33,17 +33,19 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).send("Please provide all required fields");
+    return res
+      .status(400)
+      .json({ message: "Please provide all required fields" });
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(400).send("User does not exist");
+    return res.status(400).json({ message: "User does not exist" });
   }
 
   const is_password_valid = await user.verifyPassword(password);
   if (!is_password_valid) {
-    return res.status(400).send("Invalid credentials");
+    return res.status(400).json({ message: "Invalid credentials" });
   }
 
   const token = generateToken(user._id);

@@ -10,6 +10,15 @@ connectDb();
 
 // create express app
 const app = express();
+
+const cors = require("cors");
+app.use(
+  cors({
+    credentials: true,
+    origin: [process.env.FRONTEND_URL],
+  })
+);
+
 app.use(express.json());
 
 // define a simple route
@@ -24,7 +33,7 @@ app.use("/chat", chat_router);
 app.use("/auth", auth_router);
 
 // error handling middleware
-const {errorHandler, notFound} = require("./app/middleware/error.middleware");
+const { errorHandler, notFound } = require("./app/middleware/error.middleware");
 app.use(notFound);
 app.use(errorHandler);
 

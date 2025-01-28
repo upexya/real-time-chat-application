@@ -3,12 +3,48 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
+import Spinner from "src/components/Common/Spinner";
+import Toast from "src/components/Common/Toast";
+
+import { loginService } from "src/services/auth";
+
 export default function Login() {
   const [show_password, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [form_state, setFormState] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormState((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res = await loginService(form_state);
+      if(res.error) {
+        setErrorMsg(res.message);
+        setLoading(false);
+        return;
+      }
+      setErrorMsg("")
+      setLoading(false);
+    } catch (error:any) {
+      setErrorMsg(error?.message ?? "An error occurred");
+    }
+  };
 
   return (
     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form className="space-y-6" action="#" method="POST">
+      {errorMsg ? <Toast type="danger" message={errorMsg}/> : null}
+
+      <form className="space-y-6" onSubmit={handleFormSubmit}>
         <div>
           <label
             htmlFor="email"
@@ -23,6 +59,7 @@ export default function Login() {
               id="email"
               autoComplete="email"
               required
+              onChange={handleFormChange}
               className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
             />
           </div>
@@ -49,6 +86,7 @@ export default function Login() {
             <input
               type={show_password ? "text" : "password"}
               name="password"
+              onChange={handleFormChange}
               id="password"
               autoComplete="current-password"
               required
@@ -69,8 +107,14 @@ export default function Login() {
         <div>
           <button
             type="submit"
-            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            // disabled={loading}
+            className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
           >
+            {loading ? (
+              <div className="mr-2">
+                <Spinner />
+              </div>
+            ) : null}
             Sign in
           </button>
         </div>
