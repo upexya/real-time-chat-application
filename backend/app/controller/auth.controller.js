@@ -5,12 +5,14 @@ exports.registerUser = async (req, res) => {
   const { name, email, password, avatar } = req.body;
 
   if (!name || !email || !password) {
-    return res.status(400).send("Please provide all required fields");
+    return res
+      .status(400)
+      .json({ message: "Please provide all required fields" });
   }
 
   const user_exists = await User.findOne({ email });
   if (user_exists) {
-    return res.status(400).send("User already exists");
+    return res.status(400).json({ message: "User already exists" });
   }
 
   const user = await User.create({
@@ -25,7 +27,7 @@ exports.registerUser = async (req, res) => {
 
     return res.status(201).json({ ...rest, token });
   } else {
-    return res.status(400).send("Invalid user data");
+    return res.status(400).json({ message: "Invalid user data" });
   }
 };
 

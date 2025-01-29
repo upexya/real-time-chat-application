@@ -27,3 +27,39 @@ export const loginService = async ({
     throw error;
   }
 };
+
+export const registerService = async ({
+  email,
+  password,
+  name,
+  avatar,
+}: {
+  email: string;
+  password: string;
+  name: string;
+  avatar?: string;
+}) => {
+  if (!email || !password || !name) {
+    return { error: true, message: "All fields are required" };
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}${endpoints.register}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password, name, avatar }),
+      }
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      data.error = true;
+    }
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

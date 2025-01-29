@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
@@ -7,8 +7,11 @@ import Spinner from "src/components/Common/Spinner";
 import Toast from "src/components/Common/Toast";
 
 import { loginService } from "src/services/auth";
+import routes from "src/constants/routes";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [show_password, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -33,8 +36,14 @@ export default function Login() {
         setLoading(false);
         return;
       }
+
+      const {token, ...user} = res;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
       setErrorMsg("")
       setLoading(false);
+      // TODO: add logic for callback url
+      navigate(routes.HOME);
     } catch (error:any) {
       setErrorMsg(error?.message ?? "An error occurred");
     }
@@ -107,7 +116,7 @@ export default function Login() {
         <div>
           <button
             type="submit"
-            // disabled={loading}
+            disabled={loading}
             className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
           >
             {loading ? (
