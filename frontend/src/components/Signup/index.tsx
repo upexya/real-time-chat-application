@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -6,11 +7,14 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "src/components/Common/Spinner";
 import Toast from "src/components/Common/Toast";
 
+import { setUser } from "src/redux/userSlice";
+
 import { registerService } from "src/services/auth";
 import routes from "src/constants/routes";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [show_password, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -41,7 +45,7 @@ export default function Signup() {
 
       const { token, ...user } = res;
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      dispatch(setUser(user));
 
       setErrorMsg("");
       setLoading(false);

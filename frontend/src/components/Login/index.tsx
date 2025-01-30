@@ -1,16 +1,21 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 import Spinner from "src/components/Common/Spinner";
 import Toast from "src/components/Common/Toast";
 
+import { setUser } from "src/redux/userSlice";
+
 import { loginService } from "src/services/auth";
 import routes from "src/constants/routes";
 
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [show_password, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,27 +36,27 @@ export default function Login() {
     try {
       setLoading(true);
       const res = await loginService(form_state);
-      if(res.error) {
+      if (res.error) {
         setErrorMsg(res.message);
         setLoading(false);
         return;
       }
 
-      const {token, ...user} = res;
+      const { token, ...user } = res;
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      setErrorMsg("")
+      dispatch(setUser(user));
+      setErrorMsg("");
       setLoading(false);
       // TODO: add logic for callback url
       navigate(routes.HOME);
-    } catch (error:any) {
+    } catch (error: any) {
       setErrorMsg(error?.message ?? "An error occurred");
     }
   };
 
   return (
     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      {errorMsg ? <Toast type="danger" message={errorMsg}/> : null}
+      {errorMsg ? <Toast type="danger" message={errorMsg} /> : null}
 
       <form className="space-y-6" onSubmit={handleFormSubmit}>
         <div>
