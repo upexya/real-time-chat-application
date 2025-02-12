@@ -1,6 +1,6 @@
 import { Outlet, NavLink } from "react-router-dom";
 
-import Navbar from "src/components/Layout/Navbar";
+import Navbar from "src/components/Navbar";
 
 import routes from "src/constants/routes";
 
