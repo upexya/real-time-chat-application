@@ -1,24 +1,23 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 import Navbar from "src/components/Navbar";
-
-import routes from "src/constants/routes";
+import MyChats from "src/components/MyChats";
 
 export default function Layout() {
-
   return (
-    <div> 
+    <div>
       <Navbar />
-      <h1>Layout</h1>
-      <ul>
-        <li>
-          <NavLink to={routes.HOME}>Home</NavLink>
-        </li>
-        <li>
-          <NavLink to={routes.CHATS}>Chats</NavLink>
-        </li>
-      </ul>
-      <Outlet />
+
+      <div
+        className="flex w-screen bg-no-repeat bg-cover bg-left-bottom px-2 py-6 gap-x-4"
+        style={{
+          backgroundImage: "url('/images/background.jpg')",
+          height: "calc(100vh - 72px)",
+        }}
+      >
+        <MyChats />
+        <Outlet />
+      </div>
     </div>
   );
 }

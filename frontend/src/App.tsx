@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Home from "src/views/Home";
 import Chats from "src/views/Chats";
 import Auth from "src/views/Auth";
 import PageNotFound from "src/views/PageNotFound";
@@ -26,12 +25,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={routes.HOME} element={<AppLayout />}>
-          <Route index element={<Home />} />
-          <Route path={routes.CHATS} element={<Chats />} />
-          <Route path="*" element={<PageNotFound />} />
+        <Route path={routes.CHATS} element={<AppLayout />}>
+          <Route path={routes.CHAT_ID} element={<Chats />} />
         </Route>
         <Route path={routes.AUTH} element={<Auth />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   );
