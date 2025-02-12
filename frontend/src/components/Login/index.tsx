@@ -44,6 +44,7 @@ export default function Login() {
 
       const { token, ...user } = res;
       localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
       dispatch(setUser(user));
       setErrorMsg("");
       setLoading(false);

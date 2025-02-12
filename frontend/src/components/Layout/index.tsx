@@ -1,16 +1,14 @@
-import { useSelector } from "react-redux";
 import { Outlet, NavLink } from "react-router-dom";
 
-import { RootState } from "src/redux/store";
+import Navbar from "src/components/Layout/Navbar";
 
 import routes from "src/constants/routes";
 
 export default function Layout() {
-  const user = useSelector((state: RootState) => state.user);
-  console.log("user--->", user);
 
   return (
-    <div>
+    <div> 
+      <Navbar />
       <h1>Layout</h1>
       <ul>
         <li>
