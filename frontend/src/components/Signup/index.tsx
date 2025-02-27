@@ -51,7 +51,7 @@ export default function Signup() {
       setErrorMsg("");
       setLoading(false);
       // TODO: add logic for callback url
-      navigate(routes.HOME);
+      navigate(routes.CHATS);
     } catch (error: any) {
       setErrorMsg(error?.message ?? "An error occurred");
     }

@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import ConversationDialog from "src/components/Chat/ConversationDialog";
@@ -6,6 +7,11 @@ import { RootState } from "src/redux/store";
 export default function Chats() {
   const active_chat = useSelector((state: RootState) => state.active_chat);
   const user = useSelector((state: RootState) => state.user);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
+  }, [active_chat?.chat_id]);
 
   return (
     <div className="w-3/4 bg-white shadow-2xl p-4 h-full rounded-md flex flex-col">
@@ -31,6 +37,7 @@ export default function Chats() {
                 />
               ))
             : null}
+          <div ref={messagesEndRef} />
         </div>
 
         <div className="p-4">
