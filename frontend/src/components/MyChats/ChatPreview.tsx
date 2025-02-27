@@ -1,4 +1,4 @@
-import { IChatState } from "src/redux/chatSlice";
+import { IChatState } from "src/redux/chatPreviewSlice";
 
 export default function ChatPreview(props: {
   chat: IChatState;

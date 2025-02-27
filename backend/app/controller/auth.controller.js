@@ -23,9 +23,9 @@ exports.registerUser = async (req, res) => {
   });
   if (user) {
     const token = generateToken(user._id);
-    const { password, __v, ...rest } = user._doc;
+    const { password, __v, _id, ...rest } = user._doc;
 
-    return res.status(201).json({ ...rest, token });
+    return res.status(201).json({ ...rest, id: _id, token });
   } else {
     return res.status(400).json({ message: "Invalid user data" });
   }
@@ -51,7 +51,7 @@ exports.loginUser = async (req, res) => {
   }
 
   const token = generateToken(user._id);
-  const { password: _, __v, ...rest } = user._doc;
+  const { password: _, __v, _id, ...rest } = user._doc;
 
-  return res.status(200).json({ ...rest, token });
+  return res.status(200).json({ ...rest, id: _id, token });
 };

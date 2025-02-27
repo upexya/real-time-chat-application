@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import UserReducer from "./userSlice";
+import ChatPreviewReducer from "./chatPreviewSlice";
+import ActiveChatReducer from "./activeChat";
 
 export const store = configureStore({
   reducer: {
     user: UserReducer,
+    chat_previews: ChatPreviewReducer,
+    active_chat: ActiveChatReducer,
   },
 });
 
