@@ -9,7 +9,12 @@ const auth_routes = {
   LOGOUT: "/logout",
 };
 
+const user_routes = {
+  USER: "/",
+};
+
 module.exports = {
   chat_routes,
   auth_routes,
+  user_routes,
 };
