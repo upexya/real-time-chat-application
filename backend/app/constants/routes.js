@@ -1,6 +1,8 @@
 const chat_routes = {
-  GET_ALL_CHAT: "/",
-  GET_SINGLE_CHAT: "/:chat_id",
+  CHAT: "/",
+  RENAME_GROUP: "/rename-group",
+  ADD_GROUP_MEMBER: "/add-group-member",
+  REMOVE_GROUP_MEMBER: "/remove-group-member",
 };
 
 const auth_routes = {

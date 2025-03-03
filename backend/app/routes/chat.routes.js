@@ -4,10 +4,15 @@ const router = express.Router();
 const { chat_routes } = require("../constants/routes");
 const chat_controller = require("../controller/chat.controller");
 
-// Retrieve all chat
-router.get(chat_routes.GET_ALL_CHAT, chat_controller.findAll);
+router
+  .route(chat_routes.CHAT)
+  .get(chat_controller.getAllChats)
+  .post(chat_controller.createChat);
 
-// Using router.route we can chain various methods to a single route.
-router.route(chat_routes.GET_SINGLE_CHAT).get(chat_controller.findOne);
+router.put(chat_routes.RENAME_GROUP, chat_controller.renameGroup);
+
+router.put(chat_routes.ADD_GROUP_MEMBER, chat_controller.addGroupMembers);
+
+router.put(chat_routes.REMOVE_GROUP_MEMBER, chat_controller.removeGroupMember);
 
 module.exports = router;
