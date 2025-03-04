@@ -8,6 +8,7 @@ import PageNotFound from "src/views/PageNotFound";
 
 import AppLayout from "src/components/Layout";
 import { setUser } from "src/redux/userSlice";
+import EmptyChat from "src/components/Chat/EmptyChat";
 
 import routes from "src/constants/routes";
 
@@ -26,6 +27,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path={routes.CHATS} element={<AppLayout />}>
+          <Route path={routes.CHATS} element={<EmptyChat />} />
           <Route path={routes.CHAT_ID} element={<Chats />} />
         </Route>
         <Route path={routes.AUTH} element={<Auth />} />
