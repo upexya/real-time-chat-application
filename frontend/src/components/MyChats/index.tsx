@@ -8,7 +8,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import ChatPreview from "./ChatPreview";
 import routes from "src/constants/routes";
 import Modal from "src/components/Common/Modal";
-import CreateGroupChat from "./CreateGroupChat";
+import CreateGroupChat from "src/components/GroupChat";
 
 import { RootState } from "src/redux/store";
 import { IChatState } from "src/redux/chatPreviewSlice";

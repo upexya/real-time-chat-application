@@ -2,7 +2,7 @@ const User = require("../models/user.model");
 
 exports.search = async (req, res) => {
   const user_id = req.query.id;
-  const search_query = req.query.search;
+  const search_query = req.query.q;
 
   let users = [];
   if (user_id) {

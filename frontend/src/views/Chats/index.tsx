@@ -32,7 +32,7 @@ export default function Chats() {
                   key={`message-${active_chat.chat_id}-${message.message_id}`}
                   message={message.message}
                   message_type={
-                    message.sender_id === user.id ? "sent" : "received"
+                    message.sender_id === user._id ? "sent" : "received"
                   }
                 />
               ))

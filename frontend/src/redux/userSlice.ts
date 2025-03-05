@@ -2,14 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface IUserState {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   avatar?: string;
 }
 
 const initialState: IUserState = {
-  id: "",
+  _id: "",
   name: "",
   email: "",
   avatar: "",
