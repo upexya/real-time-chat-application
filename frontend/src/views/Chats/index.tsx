@@ -11,7 +11,7 @@ export default function Chats() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
-  }, [active_chat?.chat_id]);
+  }, [active_chat?._id]);
 
   return (
     <div className="w-3/4 bg-white shadow-2xl p-4 h-full rounded-md flex flex-col">
@@ -29,7 +29,7 @@ export default function Chats() {
           {active_chat?.messages?.length
             ? active_chat.messages.map((message) => (
                 <ConversationDialog
-                  key={`message-${active_chat.chat_id}-${message.message_id}`}
+                  key={`message-${active_chat._id}-${message.message_id}`}
                   message={message.message}
                   message_type={
                     message.sender_id === user._id ? "sent" : "received"

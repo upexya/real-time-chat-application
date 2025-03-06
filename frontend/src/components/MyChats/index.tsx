@@ -47,8 +47,8 @@ export default function MyChats() {
 
           {chats.map((chat: IChatState) => (
             <NavLink
-              key={`chat-preview-${chat.chat_id}`}
-              to={`${routes.CHATS}/${chat.chat_id}`}
+              key={`chat-preview-${chat._id}`}
+              to={`${routes.CHATS}/${chat._id}`}
             >
               <ChatPreview chat={chat} is_active />
             </NavLink>

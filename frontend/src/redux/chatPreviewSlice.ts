@@ -4,7 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import {IUserState} from "./userSlice";
 
 export interface IChatState {
-  chat_id: string;
+  _id: string;
   chat_name: string;
   is_group_chat: boolean;
   users?: IUserState[];

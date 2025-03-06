@@ -15,7 +15,7 @@ export interface IActiveChatState extends IChatState {
 }
 
 const initialState: IActiveChatState = {
-  chat_id: "",
+  _id: "",
   chat_name: "",
   is_group_chat: false,
   time_stamp: "",

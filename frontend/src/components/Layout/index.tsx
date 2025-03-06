@@ -1,43 +1,15 @@
-import { Outlet, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { Outlet, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import Navbar from "src/components/Navbar";
 import MyChats from "src/components/MyChats";
 
+import { getChatPreviews } from "src/services/chat";
+
 import { setChatPreviews } from "src/redux/chatPreviewSlice";
 import { setActiveChat } from "src/redux/activeChat";
-
-const mock_chat_previews = [
-  {
-    chat_id: "1",
-    chat_name: "John Doe",
-    is_group_chat: false,
-    latest_message: "Hello! john 1",
-    time_stamp: "2025-02-23T00:00:00",
-  },
-  {
-    chat_id: "2",
-    chat_name: "Group Chat",
-    is_group_chat: true,
-    latest_message: "Hello! group 2",
-    time_stamp: "2025-02-23T00:00:00",
-  },
-  {
-    chat_id: "3",
-    chat_name: "Jane Doe",
-    is_group_chat: false,
-    latest_message: "Hello! jane 3",
-    time_stamp: "2025-02-23T00:00:00",
-  },
-  {
-    chat_id: "4",
-    chat_name: "Group Chat 2",
-    is_group_chat: true,
-    latest_message: "Hello! group 4",
-    time_stamp: "2025-02-23T00:00:00",
-  },
-];
+import { RootState } from "src/redux/store";
 
 const current_chat_messages = [
   {
@@ -98,23 +70,32 @@ const current_chat_messages = [
 export default function Layout() {
   const dispatch = useDispatch();
 
+  const chat_previews = useSelector((state: RootState) => state.chat_previews);
+
   const url_params = useParams();
   const chat_id = url_params.chat_id;
 
   useEffect(() => {
-    dispatch(setChatPreviews(mock_chat_previews));
+    handleChatPreviews();
   }, []);
 
   useEffect(() => {
-    const active_chat = mock_chat_previews.find(
-      (chat) => chat.chat_id === chat_id
-    );
+    const active_chat = chat_previews.find((chat) => chat._id === chat_id);
     if (active_chat) {
       dispatch(
         setActiveChat({ ...active_chat, messages: current_chat_messages })
       );
     }
   }, [chat_id]);
+
+  const handleChatPreviews = async () => {
+    try {
+      const chat_results = await getChatPreviews();
+      dispatch(setChatPreviews(chat_results));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div>
