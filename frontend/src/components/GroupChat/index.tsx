@@ -1,11 +1,19 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 import { IUserState } from "src/redux/userSlice";
+import { RootState } from "src/redux/store";
+
 import Pill from "src/components/Common/Pill";
+import Toast from "src/components/Common/Toast";
 import UserSelector from "src/components/User/UserSelector";
 import useDebouncedSearch from "src/customHooks/useDebouncedSearch";
 
+import { createGroupChat } from "src/services/groupChat";
+
 export default function CreateGroupChat(props: { close: () => void }) {
+  const current_user = useSelector((state: RootState) => state.user);
+
   const { close } = props;
 
   const [group_name, setGroupName] = useState("");
@@ -15,10 +23,12 @@ export default function CreateGroupChat(props: { close: () => void }) {
   const [search_error, setSearchError] = useState("");
   const [selected_users, setSelectedUsers] = useState<IUserState[]>([]);
 
+  const [error_message, setErrorMessage] = useState("");
+
   const { results: search_results, loading: search_results_loading } =
     useDebouncedSearch({ query: search_input, api: "/user" });
 
-  const handleCreateGroupChat = () => {
+  const handleCreateGroupChat = async () => {
     if (!group_name || group_name.length < 3 || group_name.length > 50) {
       if (!group_name) setNameError("Group name is required");
       else setNameError("Group name should be between 3 and 50 characters");
@@ -35,11 +45,23 @@ export default function CreateGroupChat(props: { close: () => void }) {
       setSearchError("");
     }
 
-    close();
+    try {
+      await createGroupChat({
+        chat_name: group_name,
+        users: [current_user._id, ...selected_users.map((user) => user._id)],
+        group_admin: current_user._id,
+      });
+      // TODO: add group chat to redux store and redirect to chat
+      close();
+    } catch (error: any) {
+      setErrorMessage(error?.message ?? "An error occurred");
+    }
   };
 
   return (
     <div className="flex flex-col gap-y-4">
+      {error_message ? <Toast type="danger" message={error_message} /> : null}
+
       <div className="w-full">
         <input
           type="text"
