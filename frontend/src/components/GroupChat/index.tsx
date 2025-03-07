@@ -9,6 +9,8 @@ import Toast from "src/components/Common/Toast";
 import UserSelector from "src/components/User/UserSelector";
 import useDebouncedSearch from "src/customHooks/useDebouncedSearch";
 
+import endpoints from "src/constants/endpoints";
+
 import { createGroupChat } from "src/services/groupChat";
 
 export default function CreateGroupChat(props: { close: () => void }) {
@@ -26,7 +28,7 @@ export default function CreateGroupChat(props: { close: () => void }) {
   const [error_message, setErrorMessage] = useState("");
 
   const { results: search_results, loading: search_results_loading } =
-    useDebouncedSearch({ query: search_input, api: "/user" });
+    useDebouncedSearch({ query: search_input, api: endpoints.user });
 
   const handleCreateGroupChat = async () => {
     if (!group_name || group_name.length < 3 || group_name.length > 50) {

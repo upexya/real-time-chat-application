@@ -12,8 +12,12 @@ export default function UserSelector(props: {
 }) {
   const { user_list, selected_users, setSelectedUsers, loading } = props;
 
-  if (!user_list) {
-    return null;
+  if (!user_list?.length && !loading) {
+    return (
+      <div className="flex justify-center items-center p-4">
+        <p className="font-work-sans text-gray-400">No users found</p>
+      </div>
+    );
   }
 
   const handleSelectUser = (user: IUserState) => {
