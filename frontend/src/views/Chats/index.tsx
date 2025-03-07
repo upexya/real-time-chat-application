@@ -9,6 +9,7 @@ import { removeGroupMember } from "src/services/groupChat";
 
 import { RootState } from "src/redux/store";
 import { setActiveChat } from "src/redux/activeChat";
+import { setChatPreviews } from "src/redux/chatPreviewSlice";
 
 export default function Chats() {
   const [group_members_open, setGroupMembersOpen] = useState(false);
@@ -17,6 +18,7 @@ export default function Chats() {
 
   const active_chat = useSelector((state: RootState) => state.active_chat);
   const user = useSelector((state: RootState) => state.user);
+  const chat_previews = useSelector((state: RootState) => state.chat_previews);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -46,6 +48,13 @@ export default function Chats() {
         users: active_chat?.users?.filter((user) => user._id !== user_id),
       };
       dispatch(setActiveChat(updated_active_chat));
+
+      let updated_chat_previews = [...chat_previews];
+      let chat_index = updated_chat_previews.findIndex(
+        (chat) => chat._id === active_chat._id
+      );
+      updated_chat_previews[chat_index] = updated_active_chat;
+      dispatch(setChatPreviews(updated_chat_previews));
     } catch (err: any) {
       alert(err?.message);
     }
