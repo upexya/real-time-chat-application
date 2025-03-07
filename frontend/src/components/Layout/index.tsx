@@ -86,7 +86,7 @@ export default function Layout() {
         setActiveChat({ ...active_chat, messages: current_chat_messages })
       );
     }
-  }, [chat_id]);
+  }, [chat_id, chat_previews]);
 
   const handleChatPreviews = async () => {
     try {
