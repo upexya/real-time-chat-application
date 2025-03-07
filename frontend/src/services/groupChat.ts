@@ -24,3 +24,23 @@ export async function createGroupChat({
     throw new Error(error?.response?.data?.message);
   }
 }
+
+export async function removeGroupMember({
+  chat_id,
+  user_id,
+}: {
+  chat_id: string;
+  user_id: string;
+}) {
+  try {
+    const response = await axiosInstance.put(
+      `${endpoints.remove_group_member}?chat_id=${chat_id}`,
+      {
+        user_id,
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message);
+  }
+}

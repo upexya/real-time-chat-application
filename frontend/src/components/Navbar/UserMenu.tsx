@@ -18,11 +18,13 @@ export default function UserMenu(props: { user: IUserState }) {
           aria-haspopup="true"
           onClick={() => setIsOpen(!is_open)}
         >
-          <img
-            src={user.avatar}
-            alt=""
-            className="w-6 h-6 rounded-full border border-gray-200"
-          />
+          {user?.avatar ? (
+            <img
+              src={user.avatar}
+              alt={user.name}
+              className="w-6 h-6 rounded-full border border-gray-200"
+            />
+          ) : null}
           <svg
             className="-mr-1 size-5 text-gray-400"
             viewBox="0 0 20 20"
