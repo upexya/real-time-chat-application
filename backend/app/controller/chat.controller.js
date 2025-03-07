@@ -44,11 +44,14 @@ exports.createChat = async (req, res) => {
   }
 
   // check if chat with same participants already exists
-  const existing_chat = await Chat.findOne({ users });
+  const existing_chat = await Chat.findOne({ users })
+    .populate("users", "-password")
+    .populate("group_admin", "name email")
+    .populate("latest_message")
+    .lean();
+
   if (existing_chat && !is_group_chat) {
-    return res
-      .status(400)
-      .json({ message: "Chat with same participants already exists" });
+    return res.status(200).json({ ...existing_chat, is_existing_chat: true });
   }
 
   if (is_group_chat && !group_admin) {

@@ -6,7 +6,7 @@ const avatar_size = "40px";
 
 export default function UserSelector(props: {
   user_list: IUserState[];
-  selected_users: IUserState[];
+  selected_users: IUserState[] | null;
   setSelectedUsers: (user: IUserState[]) => void;
   loading?: boolean;
 }) {
@@ -21,8 +21,8 @@ export default function UserSelector(props: {
   }
 
   const handleSelectUser = (user: IUserState) => {
-    if (!selected_users.find((u) => u._id === user._id)) {
-      setSelectedUsers([...selected_users, user]);
+    if (!selected_users?.find((u) => u._id === user._id)) {
+      setSelectedUsers([...(selected_users || []), user]);
     }
   };
 
