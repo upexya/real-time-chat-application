@@ -98,7 +98,7 @@ export default function CreateGroupChat(props: { close: () => void }) {
             {selected_users.map((user) => (
               <Pill
                 key={user._id}
-                text={user.name}
+                text={user?.name ?? "User"}
                 onRemove={() =>
                   setSelectedUsers((prev) =>
                     prev.filter((u) => u._id !== user._id)

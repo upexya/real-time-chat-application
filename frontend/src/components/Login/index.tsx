@@ -52,6 +52,7 @@ export default function Login() {
       navigate(routes.CHATS);
     } catch (error: any) {
       setErrorMsg(error?.message ?? "An error occurred");
+      setLoading(false);
     }
   };
 

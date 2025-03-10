@@ -30,7 +30,7 @@ exports.sendMessage = async (req, res) => {
 };
 
 exports.getMessages = async (req, res) => {
-  const limit = 3;
+  const limit = 20;
   const { chat_id } = req.params;
   if (!chat_id) {
     return res.status(400).json({ message: "Chat ID is required" });

@@ -5,6 +5,7 @@ import Modal from "src/components/Common/Modal";
 import GroupMembers from "src/components/GroupChat/GroupMembersList";
 import ConversationDialog from "src/components/Chat/ConversationDialog";
 
+import { sendMessage } from "src/services/message";
 import { removeGroupMember } from "src/services/groupChat";
 
 import { RootState } from "src/redux/store";
@@ -13,6 +14,7 @@ import { setChatPreviews } from "src/redux/chatPreviewSlice";
 
 export default function Chats() {
   const [group_members_open, setGroupMembersOpen] = useState(false);
+  const [message_input, setMessageInput] = useState("");
 
   const dispatch = useDispatch();
 
@@ -60,6 +62,31 @@ export default function Chats() {
     }
   };
 
+  const handleSendMessage = async (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter" && message_input) {
+      setMessageInput("");
+      try {
+        let chat_messages = [
+          {
+            content: message_input,
+            sender: user,
+            time_stamp: new Date().toISOString(),
+            _id: Math.random().toString(),
+          },
+          ...active_chat.messages,
+        ];
+        await dispatch(
+          setActiveChat({ ...active_chat, messages: chat_messages })
+        );
+        await sendMessage({ chat_id: active_chat._id, content: message_input });
+      } catch (err: any) {
+        alert(err?.message || "An error occurred");
+      }
+    }
+  };
+
   return (
     <>
       <div className="w-3/4 bg-white shadow-2xl p-4 h-full rounded-md flex flex-col">
@@ -70,7 +97,7 @@ export default function Chats() {
 
         <div className="bg-gray-100 my-2 rounded-md w-full h-full overflow-hidden">
           <div
-            className="p-4 overflow-y-scroll"
+            className="p-4 overflow-y-scroll flex flex-col-reverse"
             style={{
               height: "calc(100% - 74px)",
             }}
@@ -91,6 +118,9 @@ export default function Chats() {
 
           <div className="p-4">
             <input
+              value={message_input}
+              onChange={(e) => setMessageInput(e.target.value)}
+              onKeyDown={(e) => handleSendMessage(e)}
               type="text"
               className="w-full p-2 rounded-md border border-gray-300 outline-none"
               placeholder="Type a message"

@@ -44,7 +44,7 @@ exports.createChat = async (req, res) => {
   }
 
   // check if chat with same participants already exists
-  const existing_chat = await Chat.findOne({ users })
+  const existing_chat = await Chat.findOne({ users: { $all: users } })
     .populate("users", "-password")
     .populate("group_admin", "name email")
     .populate("latest_message")
