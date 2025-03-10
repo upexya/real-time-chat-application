@@ -67,6 +67,11 @@ exports.createChat = async (req, res) => {
 
   await chat.save();
 
+  await chat.populate([
+    { path: "users", select: "name email avatar" },
+    { path: "group_admin", select: "name email" },
+  ]);
+
   res.status(201).json(chat);
 };
 

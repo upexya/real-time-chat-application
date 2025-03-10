@@ -1,20 +1,27 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
-import { IUserState } from "src/redux/userSlice";
 import { RootState } from "src/redux/store";
+import { IUserState } from "src/redux/userSlice";
+import { setChatPreviews } from "src/redux/chatPreviewSlice";
 
 import Pill from "src/components/Common/Pill";
 import Toast from "src/components/Common/Toast";
 import UserSelector from "src/components/User/UserSelector";
 import useDebouncedSearch from "src/customHooks/useDebouncedSearch";
 
+import routes from "src/constants/routes";
 import endpoints from "src/constants/endpoints";
 
 import { createGroupChat } from "src/services/groupChat";
 
 export default function CreateGroupChat(props: { close: () => void }) {
+  const dispatch = useDispatch();
   const current_user = useSelector((state: RootState) => state.user);
+  const chat_previews = useSelector((state: RootState) => state.chat_previews);
+
+  const navigate = useNavigate();
 
   const { close } = props;
 
@@ -48,13 +55,14 @@ export default function CreateGroupChat(props: { close: () => void }) {
     }
 
     try {
-      await createGroupChat({
+      const result = await createGroupChat({
         chat_name: group_name,
         users: [current_user._id, ...selected_users.map((user) => user._id)],
         group_admin: current_user._id,
       });
-      // TODO: add group chat to redux store and redirect to chat
       close();
+      dispatch(setChatPreviews([result, ...chat_previews]));
+      navigate(`${routes.CHATS}/${result._id}`);
     } catch (error: any) {
       setErrorMessage(error?.message ?? "An error occurred");
     }

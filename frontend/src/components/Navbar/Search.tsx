@@ -46,7 +46,6 @@ export default function Search() {
 
   const handleUserSelect = async (user: IUserState[]) => {
     try {
-      console.log(user);
       const result = await createChat({
         chat_name: `${current_user.name} & ${user[0].name}`,
         users: [current_user._id, user[0]._id],

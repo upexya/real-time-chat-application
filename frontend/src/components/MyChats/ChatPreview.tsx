@@ -10,12 +10,14 @@ export default function ChatPreview(props: {
   return (
     <div className="bg-gray-100 p-2 rounded-md w-full">
       <div className="font-work-sans text-lg text-gray-600">{chat_name}</div>
-      <div className="font-work-sans text-sm text-gray-400 line-clamp-2">
-        <span className="text-gray-500 font-medium">
-          {latest_message?.sender?.name}
-        </span>
-        : {latest_message?.content}
-      </div>
+      {latest_message?.content ? (
+        <div className="font-work-sans text-sm text-gray-400 line-clamp-2">
+          <span className="text-gray-500 font-medium">
+            {latest_message?.sender?.name}
+          </span>
+          : {latest_message?.content}
+        </div>
+      ) : null}
     </div>
   );
 }
