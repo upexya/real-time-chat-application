@@ -29,6 +29,7 @@ app.get("/", (req, res) => {
 const chat_router = require("./app/routes/chat.routes");
 const auth_router = require("./app/routes/auth.routes");
 const user_router = require("./app/routes/user.routes");
+const message_router = require("./app/routes/message.routes");
 
 app.use("/auth", auth_router);
 
@@ -38,6 +39,7 @@ app.use(auth);
 
 app.use("/chat", chat_router);
 app.use("/user", user_router);
+app.use("/message", message_router);
 
 // error handling middleware
 const { errorHandler, notFound } = require("./app/middleware/error.middleware");

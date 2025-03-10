@@ -15,8 +15,14 @@ const user_routes = {
   USER: "/",
 };
 
+const message_routes = {
+  MESSAGE: "/",
+  GET_MESSAGES: "/:chat_id",
+};
+
 module.exports = {
   chat_routes,
   auth_routes,
   user_routes,
+  message_routes,
 };

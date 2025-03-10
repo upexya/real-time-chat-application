@@ -19,7 +19,7 @@ exports.getAllChats = async (req, res) => {
 
     user_chats = await User.populate(user_chats, {
       path: "latest_message.sender",
-      select: "-password",
+      select: "name avatar",
     });
 
     if (!user_chats) {
