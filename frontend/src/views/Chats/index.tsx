@@ -78,10 +78,10 @@ export default function Chats() {
             {active_chat?.messages?.length
               ? active_chat.messages.map((message) => (
                   <ConversationDialog
-                    key={`message-${active_chat._id}-${message.message_id}`}
-                    message={message.message}
+                    key={`message-${active_chat._id}-${message._id}`}
+                    message={message.content}
                     message_type={
-                      message.sender_id === user._id ? "sent" : "received"
+                      message?.sender?._id === user._id ? "sent" : "received"
                     }
                   />
                 ))

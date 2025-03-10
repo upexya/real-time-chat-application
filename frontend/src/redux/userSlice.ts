@@ -3,8 +3,8 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface IUserState {
   _id: string;
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
   avatar?: string;
 }
 

@@ -2,11 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { IChatState } from "./chatPreviewSlice";
+import { IUserState } from "./userSlice";
 
 export interface IMessageState {
-  message_id: string;
-  sender_id: string;
-  message: string;
+  _id: string;
+  sender: IUserState;
+  content: string;
   time_stamp: string;
 }
 

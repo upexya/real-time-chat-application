@@ -1,20 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import {IUserState} from "./userSlice";
+import { IUserState } from "./userSlice";
+import { IMessageState } from "./activeChat";
 
 export interface IChatState {
   _id: string;
   chat_name: string;
   is_group_chat: boolean;
   users?: IUserState[];
-  latest_message?: string;
+  latest_message?: IMessageState;
   group_admin?: IUserState;
   time_stamp: string;
 }
 
-const initialState: IChatState[] = []
-
+const initialState: IChatState[] = [];
 
 export const chatPreviewSlice = createSlice({
   name: "chat_previews",
