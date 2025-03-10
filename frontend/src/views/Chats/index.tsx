@@ -8,9 +8,13 @@ import ConversationDialog from "src/components/Chat/ConversationDialog";
 import { sendMessage } from "src/services/message";
 import { removeGroupMember } from "src/services/groupChat";
 
+import getTimeDifferenceInMin from "src/utils/getTimeDifference";
+
 import { RootState } from "src/redux/store";
 import { setActiveChat } from "src/redux/activeChat";
 import { setChatPreviews } from "src/redux/chatPreviewSlice";
+
+const time_diff_for_showing_avatar = 3;
 
 export default function Chats() {
   const [group_members_open, setGroupMembersOpen] = useState(false);
@@ -72,7 +76,7 @@ export default function Chats() {
           {
             content: message_input,
             sender: user,
-            time_stamp: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
             _id: Math.random().toString(),
           },
           ...active_chat.messages,
@@ -103,15 +107,35 @@ export default function Chats() {
             }}
           >
             {active_chat?.messages?.length
-              ? active_chat.messages.map((message) => (
-                  <ConversationDialog
-                    key={`message-${active_chat._id}-${message._id}`}
-                    message={message.content}
-                    message_type={
-                      message?.sender?._id === user._id ? "sent" : "received"
-                    }
-                  />
-                ))
+              ? active_chat.messages.map((message, i) => {
+                  const message_type =
+                    message?.sender?._id === user._id ? "sent" : "received";
+                  const previous_message = active_chat?.messages?.[i - 1];
+                  const show_avatar =
+                    i === 0 ||
+                    previous_message?.sender?._id !== message?.sender?._id ||
+                    getTimeDifferenceInMin(
+                      previous_message?.createdAt,
+                      message?.createdAt
+                    ) > time_diff_for_showing_avatar;
+
+                  return (
+                    <ConversationDialog
+                      key={`message-${active_chat._id}-${message._id}`}
+                      message={message.content}
+                      has_time_difference={show_avatar}
+                      created_at={message.createdAt}
+                      avatar_url={
+                        message_type === "received"
+                          ? active_chat?.users?.find(
+                              (user) => user?._id === message?.sender?._id
+                            )?.avatar
+                          : null
+                      }
+                      message_type={message_type}
+                    />
+                  );
+                })
               : null}
             <div ref={messagesEndRef} />
           </div>

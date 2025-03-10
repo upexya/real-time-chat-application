@@ -8,7 +8,7 @@ export interface IMessageState {
   _id: string;
   sender: IUserState;
   content: string;
-  time_stamp: string;
+  createdAt: string;
 }
 
 export interface IActiveChatState extends IChatState {

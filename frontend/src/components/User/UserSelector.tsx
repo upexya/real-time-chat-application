@@ -57,7 +57,7 @@ export default function UserSelector(props: {
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="object-contain"
+                className="object-cover"
               />
             </div>
 
