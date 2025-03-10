@@ -3,12 +3,12 @@ import endpoints from "src/constants/endpoints";
 
 export async function getActiveChatMessages(props: {
   chat_id: string;
-  from?: number;
+  page?: number;
 }) {
-  const { chat_id, from = 0 } = props;
+  const { chat_id, page = 0 } = props;
   try {
     const response = await axiosInstance.get(
-      `${endpoints.message}/${chat_id}?from=${from}`
+      `${endpoints.message}/${chat_id}?page=${page}`
     );
     return response.data;
   } catch (error: any) {

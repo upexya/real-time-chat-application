@@ -13,6 +13,8 @@ export interface IMessageState {
 
 export interface IActiveChatState extends IChatState {
   messages: IMessageState[];
+  has_more?: boolean;
+  message_count: number;
 }
 
 const initialState: IActiveChatState = {
@@ -21,6 +23,8 @@ const initialState: IActiveChatState = {
   is_group_chat: false,
   time_stamp: "",
   messages: [],
+  message_count: 0,
+  has_more: true,
 };
 
 export const activeChatSlice = createSlice({

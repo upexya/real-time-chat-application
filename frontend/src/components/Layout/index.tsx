@@ -46,7 +46,14 @@ export default function Layout() {
     try {
       const chat_messages = await getActiveChatMessages({ chat_id });
       if (chat_messages) {
-        dispatch(setActiveChat({ ...active_chat, messages: chat_messages }));
+        dispatch(
+          setActiveChat({
+            ...active_chat,
+            messages: chat_messages?.messages,
+            message_count: chat_messages?.count || 0,
+            has_more: chat_messages?.has_more,
+          })
+        );
       }
     } catch (err: any) {
       alert(err?.messages || "An error occurred");

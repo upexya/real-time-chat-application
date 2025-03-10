@@ -2,10 +2,11 @@ import { useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import Modal from "src/components/Common/Modal";
+import Spinner from "src/components/Common/Spinner";
 import GroupMembers from "src/components/GroupChat/GroupMembersList";
 import ConversationDialog from "src/components/Chat/ConversationDialog";
 
-import { sendMessage } from "src/services/message";
+import { sendMessage, getActiveChatMessages } from "src/services/message";
 import { removeGroupMember } from "src/services/groupChat";
 
 import getTimeDifferenceInMin from "src/utils/getTimeDifference";
@@ -19,6 +20,8 @@ const time_diff_for_showing_avatar = 3;
 export default function Chats() {
   const [group_members_open, setGroupMembersOpen] = useState(false);
   const [message_input, setMessageInput] = useState("");
+  const [page_number, setPageNumber] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -91,6 +94,33 @@ export default function Chats() {
     }
   };
 
+  const handleLoadMoreMessages = async () => {
+    if (loading) return;
+
+    try {
+      setLoading(true);
+      let chat_messages = await getActiveChatMessages({
+        chat_id: active_chat._id,
+        page: page_number,
+      });
+      if (chat_messages) {
+        dispatch(
+          setActiveChat({
+            ...active_chat,
+            messages: [...active_chat.messages, ...chat_messages.messages],
+            message_count: chat_messages.count || 0,
+            has_more: chat_messages.has_more,
+          })
+        );
+      }
+      setPageNumber(page_number + 1);
+    } catch (err: any) {
+      alert(err?.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="w-3/4 bg-white shadow-2xl p-4 h-full rounded-md flex flex-col">
@@ -138,6 +168,16 @@ export default function Chats() {
                 })
               : null}
             <div ref={messagesEndRef} />
+
+            {active_chat?.has_more ? (
+              <button
+                disabled={loading}
+                onClick={handleLoadMoreMessages}
+                className="bg-blue-300 text-sm rounded-3xl px-4 py-2 w-fit flex justify-center mx-auto mb-4 font-work-sans hover:bg-blue-400"
+              >
+                {loading ? <Spinner /> : <>Load more</>}
+              </button>
+            ) : null}
           </div>
 
           <div className="p-4">
