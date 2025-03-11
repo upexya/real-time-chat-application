@@ -12,6 +12,7 @@ export interface IChatState {
   latest_message?: IMessageState;
   group_admin?: IUserState;
   time_stamp: string;
+  is_unread?: boolean;
 }
 
 const initialState: IChatState[] = [];

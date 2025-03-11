@@ -55,6 +55,21 @@ export default function Layout() {
           })
         );
       }
+      if (chat_previews?.find((chat) => chat._id === chat_id)?.is_unread) {
+        dispatch(
+          setChatPreviews(
+            chat_previews.map((chat) => {
+              if (chat._id === chat_id) {
+                return {
+                  ...chat,
+                  is_unread: false,
+                };
+              }
+              return chat;
+            })
+          )
+        );
+      }
     } catch (err: any) {
       alert(err?.messages || "An error occurred");
     }

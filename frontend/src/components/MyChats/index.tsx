@@ -50,7 +50,7 @@ export default function MyChats() {
               key={`chat-preview-${chat._id}`}
               to={`${routes.CHATS}/${chat._id}`}
             >
-              <ChatPreview chat={chat} is_active />
+              <ChatPreview chat={chat} />
             </NavLink>
           ))}
         </div>

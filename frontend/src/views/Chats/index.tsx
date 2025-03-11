@@ -13,6 +13,7 @@ import { sendMessage, getActiveChatMessages } from "src/services/message";
 import { removeGroupMember } from "src/services/groupChat";
 
 import getTimeDifferenceInMin from "src/utils/getTimeDifference";
+import socket_events from "src/constants/socket_events";
 
 import { RootState } from "src/redux/store";
 import { setActiveChat } from "src/redux/activeChat";
@@ -52,10 +53,10 @@ export default function Chats() {
     // Initialize socket if not already connected
     if (!socketRef?.current) {
       socketRef.current = io(process.env.REACT_APP_API_URL);
-      socketRef.current.emit("setup", current_user);
+      socketRef.current.emit(socket_events.setup, current_user);
     }
     if (chat_id) {
-      socketRef.current.emit("join_room", chat_id);
+      socketRef.current.emit(socket_events.join_room, chat_id);
     }
 
     return () => {
@@ -65,8 +66,44 @@ export default function Chats() {
   }, [current_user, chat_id]);
 
   useEffect(() => {
-    socketRef.current?.on("message_received", (data) => {
-      console.log("message received", data);
+    socketRef.current?.on(socket_events.message_received, (data) => {
+      if (data?.chat?._id === chat_id) {
+        dispatch(
+          setActiveChat({
+            ...active_chat,
+            messages: [
+              {
+                content: data.message,
+                sender: { _id: data?.sender?._id, name: data?.sender?.name },
+                createdAt: new Date().toISOString(),
+                _id: Math.random().toString(),
+              },
+              ...active_chat.messages,
+            ],
+          })
+        );
+      }
+
+      dispatch(
+        setChatPreviews(
+          chat_previews.map((chat) => {
+            if (chat._id === data?.chat?._id) {
+              return {
+                ...chat,
+                latest_message: {
+                  _id: Math.random().toString(),
+                  content: data.message,
+                  sender: { _id: data?.sender?._id, name: data?.sender?.name },
+                  createdAt: new Date().toISOString(),
+                },
+                time_stamp: new Date().toISOString(),
+                is_unread: chat._id !== chat_id,
+              };
+            }
+            return chat;
+          })
+        )
+      );
     });
   });
 
@@ -125,13 +162,16 @@ export default function Chats() {
         );
         await sendMessage({ chat_id: active_chat._id, content: message_input });
 
-        socketRef.current?.emit("new_message", {
+        socketRef.current?.emit(socket_events.new_message, {
           chat: {
             _id: active_chat._id,
             users: active_chat?.users?.map((user) => user._id),
           },
           message: message_input,
-          sender: current_user?._id,
+          sender: {
+            _id: current_user?._id,
+            name: current_user?.name,
+          },
         });
       } catch (err: any) {
         alert(err?.message || "An error occurred");

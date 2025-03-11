@@ -70,13 +70,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new_message", (new_message) => {
-    console.log("new_message", new_message);
     let chat = new_message.chat;
     if (!chat.users) return console.log("chat.users not defined");
 
     chat.users.forEach((user) => {
       // chat message should not be sent to the sender
-      if (user === new_message.sender) return;
+      if (user === new_message?.sender?._id) return;
       socket.to(user).emit("message_received", new_message);
     });
   });
