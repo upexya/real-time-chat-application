@@ -47,6 +47,37 @@ app.use(notFound);
 app.use(errorHandler);
 
 // listen for requests
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log("Server is listening on port ", port);
+});
+
+const io = require("socket.io")(server, {
+  pingTimeout: 30000,
+  cors: {
+    origin: process.env.FRONTEND_URL,
+  },
+});
+
+io.on("connection", (socket) => {
+  socket.on("setup", (user_data) => {
+    socket.join(user_data._id);
+    socket.emit("connected");
+  });
+
+  socket.on("join_room", (room) => {
+    socket.join(room);
+    console.log("joined room", room);
+  });
+
+  socket.on("new_message", (new_message) => {
+    console.log("new_message", new_message);
+    let chat = new_message.chat;
+    if (!chat.users) return console.log("chat.users not defined");
+
+    chat.users.forEach((user) => {
+      // chat message should not be sent to the sender
+      if (user === new_message.sender) return;
+      socket.to(user).emit("message_received", new_message);
+    });
+  });
 });

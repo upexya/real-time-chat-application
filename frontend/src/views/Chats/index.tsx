@@ -1,5 +1,8 @@
+import { useParams } from "react-router-dom";
+import io, { Socket } from "socket.io-client";
 import { useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 import Modal from "src/components/Common/Modal";
 import Spinner from "src/components/Common/Spinner";
@@ -18,6 +21,14 @@ import { setChatPreviews } from "src/redux/chatPreviewSlice";
 const time_diff_for_showing_avatar = 3;
 
 export default function Chats() {
+  // Since we don't want re-renders when socket updates, useRef is the best choice
+  const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(
+    null
+  );
+
+  const url_params = useParams();
+  const chat_id = url_params.chat_id;
+
   const [group_members_open, setGroupMembersOpen] = useState(false);
   const [message_input, setMessageInput] = useState("");
   const [page_number, setPageNumber] = useState(1);
@@ -28,11 +39,36 @@ export default function Chats() {
   const active_chat = useSelector((state: RootState) => state.active_chat);
   const user = useSelector((state: RootState) => state.user);
   const chat_previews = useSelector((state: RootState) => state.chat_previews);
+  const current_user = useSelector((state: RootState) => state.user);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
   }, [active_chat?._id]);
+
+  useEffect(() => {
+    if (!current_user) return;
+
+    // Initialize socket if not already connected
+    if (!socketRef?.current) {
+      socketRef.current = io(process.env.REACT_APP_API_URL);
+      socketRef.current.emit("setup", current_user);
+    }
+    if (chat_id) {
+      socketRef.current.emit("join_room", chat_id);
+    }
+
+    return () => {
+      socketRef.current?.disconnect(); // Cleanup socket on unmount
+      socketRef.current = null;
+    };
+  }, [current_user, chat_id]);
+
+  useEffect(() => {
+    socketRef.current?.on("message_received", (data) => {
+      console.log("message received", data);
+    });
+  });
 
   const group_members_content = active_chat?.users?.length ? (
     <div
@@ -88,6 +124,15 @@ export default function Chats() {
           setActiveChat({ ...active_chat, messages: chat_messages })
         );
         await sendMessage({ chat_id: active_chat._id, content: message_input });
+
+        socketRef.current?.emit("new_message", {
+          chat: {
+            _id: active_chat._id,
+            users: active_chat?.users?.map((user) => user._id),
+          },
+          message: message_input,
+          sender: current_user?._id,
+        });
       } catch (err: any) {
         alert(err?.message || "An error occurred");
       }
