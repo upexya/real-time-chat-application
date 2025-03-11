@@ -79,4 +79,12 @@ io.on("connection", (socket) => {
       socket.to(user).emit("message_received", new_message);
     });
   });
+
+  socket.on("typing", (room) => {
+    socket.to(room).emit("typing", room);
+  });
+
+  socket.on("stop_typing", (room) => {
+    socket.to(room).emit("stop_typing", room);
+  });
 });

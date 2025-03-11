@@ -30,3 +30,64 @@ code {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.isTyping {
+  width: 40px;
+  justify-content: space-around;
+  display: flex;
+}
+
+.jump1,
+.jump2,
+.jump3 {
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  background-color: gray;
+}
+
+.jump1 {
+  animation: typing 1.5s linear infinite;
+  animation-delay: 01.1s;
+}
+
+.jump2 {
+  animation: typing 1.5s linear infinite;
+  animation-delay: 01.2s;
+}
+
+.jump3 {
+  animation: typing 1.5s linear infinite;
+  animation-delay: 01.3s;
+}
+
+@keyframes typing {
+  0% {
+      transform: translateY(0px);
+  }
+
+  25% {
+      transform: translateY(0px);
+  }
+
+  35% {
+      transform: translateY(10px);
+  }
+
+  45% {
+      transform: translateY(0px);
+  }
+
+  60% {
+      transform: translateY(-10px);
+  }
+
+  75% {
+      background-color: #f4f4f4;
+      transform: translateY(0px);
+  }
+
+  100% {
+      transform: translateY(0px);
+  }
+}

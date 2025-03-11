@@ -13,6 +13,7 @@ export interface IChatState {
   group_admin?: IUserState;
   time_stamp: string;
   is_unread?: boolean;
+  is_typing?: boolean;
 }
 
 const initialState: IChatState[] = [];

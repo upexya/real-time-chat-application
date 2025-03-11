@@ -8,6 +8,7 @@ import Modal from "src/components/Common/Modal";
 import Spinner from "src/components/Common/Spinner";
 import GroupMembers from "src/components/GroupChat/GroupMembersList";
 import ConversationDialog from "src/components/Chat/ConversationDialog";
+import Typing from "src/components/Common/Typing";
 
 import { sendMessage, getActiveChatMessages } from "src/services/message";
 import { removeGroupMember } from "src/services/groupChat";
@@ -19,7 +20,8 @@ import { RootState } from "src/redux/store";
 import { setActiveChat } from "src/redux/activeChat";
 import { setChatPreviews } from "src/redux/chatPreviewSlice";
 
-const time_diff_for_showing_avatar = 3;
+const time_diff_for_showing_avatar = 3; // In minutes
+const time_diff_for_typing = 3000; // In ms
 
 export default function Chats() {
   // Since we don't want re-renders when socket updates, useRef is the best choice
@@ -28,12 +30,13 @@ export default function Chats() {
   );
 
   const url_params = useParams();
-  const chat_id = url_params.chat_id;
+  const current_chat_id = url_params.chat_id;
 
   const [group_members_open, setGroupMembersOpen] = useState(false);
   const [message_input, setMessageInput] = useState("");
   const [page_number, setPageNumber] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [typing, setTyping] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -55,72 +58,102 @@ export default function Chats() {
       socketRef.current = io(process.env.REACT_APP_API_URL);
       socketRef.current.emit(socket_events.setup, current_user);
     }
-    if (chat_id) {
-      socketRef.current.emit(socket_events.join_room, chat_id);
+    if (current_chat_id) {
+      socketRef.current.emit(socket_events.join_room, current_chat_id);
     }
 
     return () => {
       socketRef.current?.disconnect(); // Cleanup socket on unmount
       socketRef.current = null;
     };
-  }, [current_user, chat_id]);
+  }, [current_user, current_chat_id]);
 
   useEffect(() => {
-    socketRef.current?.on(socket_events.message_received, (data) => {
-      if (data?.chat?._id === chat_id) {
-        dispatch(
-          setActiveChat({
-            ...active_chat,
-            messages: [
-              {
-                content: data.message,
-                sender: { _id: data?.sender?._id, name: data?.sender?.name },
-                createdAt: new Date().toISOString(),
-                _id: Math.random().toString(),
-              },
-              ...active_chat.messages,
-            ],
-          })
-        );
-      }
+    socketRef.current?.emit(socket_events.typing, current_chat_id);
 
-      dispatch(
-        setChatPreviews(
-          chat_previews.map((chat) => {
-            if (chat._id === data?.chat?._id) {
-              return {
-                ...chat,
-                latest_message: {
-                  _id: Math.random().toString(),
-                  content: data.message,
-                  sender: { _id: data?.sender?._id, name: data?.sender?.name },
-                  createdAt: new Date().toISOString(),
-                },
-                time_stamp: new Date().toISOString(),
-                is_unread: chat._id !== chat_id,
-              };
-            }
-            return chat;
-          })
-        )
-      );
+    // Set a timeout to detect when the user stops typing
+    const timeout = setTimeout(() => {
+      socketRef.current?.emit(socket_events.stop_typing, current_chat_id);
+    }, time_diff_for_typing);
+
+    // Clear timeout if user types again before timeout completes
+    return () => clearTimeout(timeout);
+  }, [message_input]);
+
+  useEffect(() => {
+    socketRef.current?.on(socket_events.message_received, (data) =>
+      handleNewMessageReceived(data)
+    );
+
+    socketRef?.current?.on(socket_events.typing, (chat_id) => {
+      handleTyping(chat_id);
+    });
+
+    socketRef?.current?.on(socket_events.stop_typing, (chat_id) => {
+      handleStopTyping(chat_id);
     });
   });
 
-  const group_members_content = active_chat?.users?.length ? (
-    <div
-      onClick={() => setGroupMembersOpen(true)}
-      className="font-work-sans text-m text-gray-400 cursor-pointer hover:text-gray-500"
-    >
-      {active_chat?.users
-        ?.slice(0, 3)
-        .map((user) => user.name)
-        .join(", ")}
-      {active_chat?.users?.length > 3
-        ? ` and ${active_chat.users.length - 3} more`
-        : null}
-    </div>
-  ) : null;
+  const handleNewMessageReceived = (data: {
+    chat: {
+      _id: string;
+      users: string[];
+    };
+    message: string;
+    sender: {
+      _id: string;
+      name: string;
+    };
+  }) => {
+    if (data?.chat?._id === current_chat_id) {
+      dispatch(
+        setActiveChat({
+          ...active_chat,
+          messages: [
+            {
+              content: data.message,
+              sender: { _id: data?.sender?._id, name: data?.sender?.name },
+              createdAt: new Date().toISOString(),
+              _id: Math.random().toString(),
+            },
+            ...active_chat.messages,
+          ],
+        })
+      );
+    }
+    dispatch(
+      setChatPreviews(
+        chat_previews.map((chat) => {
+          if (chat._id === data?.chat?._id) {
+            return {
+              ...chat,
+              latest_message: {
+                _id: Math.random().toString(),
+                content: data.message,
+                sender: { _id: data?.sender?._id, name: data?.sender?.name },
+                createdAt: new Date().toISOString(),
+              },
+              time_stamp: new Date().toISOString(),
+              is_unread: chat._id !== current_chat_id,
+            };
+          }
+          return chat;
+        })
+      )
+    );
+  };
+
+  const handleTyping = (chat_id: string) => {
+    if (chat_id === current_chat_id && !typing) {
+      setTyping(true);
+    }
+  };
+
+  const handleStopTyping = (chat_id: string) => {
+    if (chat_id === current_chat_id && typing) {
+      setTyping(false);
+    }
+  };
 
   const removeMember = async (user_id: string) => {
     try {
@@ -206,6 +239,21 @@ export default function Chats() {
     }
   };
 
+  const group_members_content = active_chat?.users?.length ? (
+    <div
+      onClick={() => setGroupMembersOpen(true)}
+      className="font-work-sans text-m text-gray-400 cursor-pointer hover:text-gray-500"
+    >
+      {active_chat?.users
+        ?.slice(0, 3)
+        .map((user) => user.name)
+        .join(", ")}
+      {active_chat?.users?.length > 3
+        ? ` and ${active_chat.users.length - 3} more`
+        : null}
+    </div>
+  ) : null;
+
   return (
     <>
       <div className="w-3/4 bg-white shadow-2xl p-4 h-full rounded-md flex flex-col">
@@ -221,6 +269,13 @@ export default function Chats() {
               height: "calc(100% - 74px)",
             }}
           >
+            <div ref={messagesEndRef} />
+            {typing ? (
+              <div className="mt-4">
+                <Typing />
+              </div>
+            ) : null}
+
             {active_chat?.messages?.length
               ? active_chat.messages.map((message, i) => {
                   const message_type =
@@ -252,7 +307,6 @@ export default function Chats() {
                   );
                 })
               : null}
-            <div ref={messagesEndRef} />
 
             {active_chat?.has_more ? (
               <button
