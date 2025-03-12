@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
+import { toast } from 'react-toastify';
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -63,7 +64,7 @@ export default function Search() {
       setPopoverOpen(false);
       navigate(`${routes.CHATS}/${result._id}`);
     } catch (error: any) {
-      alert(error?.message ?? "An error occurred");
+      toast.error(error?.message ?? "An error occurred");
     }
   };
 
@@ -83,7 +84,7 @@ export default function Search() {
 
       {popover_open ? (
         <div
-          className="absolute max-w-lvw bg-white rounded-xl shadow-xl left-0 overflow-hidden px-4 pb-4"
+          className="absolute max-w-lvw bg-white rounded-xl shadow-xl left-0 overflow-hidden px-4 pb-4 z-30"
           style={{ top: "50px", width: "500px" }}
         >
           <UserSelector

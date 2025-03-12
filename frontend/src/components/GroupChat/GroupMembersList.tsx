@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from 'react-toastify';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -22,7 +23,7 @@ export default function GroupMembers(props: {
     try {
       await removeMember(user_id);
     } catch (error: any) {
-      alert(error?.message);
+      toast.error(error.message);
     } finally {
       setUserLoading(user_loading.filter((id) => id !== user_id));
     }

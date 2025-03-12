@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { toast } from 'react-toastify';
 import { Outlet, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -71,7 +72,7 @@ export default function Layout() {
         );
       }
     } catch (err: any) {
-      alert(err?.messages || "An error occurred");
+      toast.error(err?.messages || "An error occurred");
     }
   };
 

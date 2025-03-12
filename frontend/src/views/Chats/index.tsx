@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
 import io, { Socket } from "socket.io-client";
 import { useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -171,7 +172,7 @@ export default function Chats() {
       updated_chat_previews[chat_index] = updated_active_chat;
       dispatch(setChatPreviews(updated_chat_previews));
     } catch (err: any) {
-      alert(err?.message);
+      toast.error(err?.message);
     }
   };
 
@@ -207,7 +208,7 @@ export default function Chats() {
           },
         });
       } catch (err: any) {
-        alert(err?.message || "An error occurred");
+        toast.error(err?.message || "An error occurred");
       }
     }
   };
@@ -233,7 +234,7 @@ export default function Chats() {
       }
       setPageNumber(page_number + 1);
     } catch (err: any) {
-      alert(err?.message || "An error occurred");
+      toast.error(err?.message || "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -346,6 +347,8 @@ export default function Chats() {
           removeMember={removeMember}
         />
       </Modal>
+
+      <ToastContainer />
     </>
   );
 }
