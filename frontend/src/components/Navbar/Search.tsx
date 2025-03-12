@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -84,8 +84,12 @@ export default function Search() {
 
       {popover_open ? (
         <div
-          className="absolute max-w-lvw bg-white rounded-xl shadow-xl left-0 overflow-hidden px-4 pb-4 z-30"
-          style={{ top: "50px", width: "500px" }}
+          className="absolute bg-white rounded-xl shadow-xl left-0 overflow-hidden px-4 pb-4 z-30"
+          style={{
+            top: "50px",
+            width: "500px",
+            maxWidth: "calc(100vw - 32px)",
+          }}
         >
           <UserSelector
             user_list={search_results}

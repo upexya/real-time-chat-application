@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,8 @@ export default function MyChats() {
 
   const chats = useSelector((state: RootState) => state.chat_previews);
 
+  const { chat_id } = useParams<{ chat_id: string }>();
+
   const group_chat_button = (
     <button
       onClick={() => setGroupChatModalOpen(true)}
@@ -34,7 +36,9 @@ export default function MyChats() {
   return (
     <>
       <div
-        className="w-1/4 bg-white shadow-2xl p-4 h-full rounded-md"
+        className={`w-full md:w-1/4 bg-white shadow-2xl p-4 h-full rounded-md overflow-y-scroll ${
+          chat_id ? "hidden md:block" : ""
+        }`}
         style={{ minWidth: "260px" }}
       >
         <div className="flex flex-col gap-y-2">

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from "react-toastify";
 import io, { Socket } from "socket.io-client";
 import { useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -257,7 +257,7 @@ export default function Chats() {
 
   return (
     <>
-      <div className="w-3/4 bg-white shadow-2xl p-4 h-full rounded-md flex flex-col">
+      <div className="w-full md:w-3/4 bg-white shadow-2xl p-4 h-full rounded-md flex flex-col">
         <div className="font-work-sans text-2xl text-gray-600">
           {active_chat.chat_name}
         </div>

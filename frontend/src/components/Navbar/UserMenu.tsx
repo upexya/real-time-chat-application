@@ -1,18 +1,31 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+
+import useClickOutside from "src/customHooks/useClickOutside";
 
 import { IUserState } from "src/redux/userSlice";
+
+import routes from "src/constants/routes";
 
 export default function UserMenu(props: { user: IUserState }) {
   const { user } = props;
 
   const [is_open, setIsOpen] = useState(false);
 
+  const el_ref = useRef(null);
+  useClickOutside(el_ref, () => setIsOpen(false));
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    window.location.href = routes.AUTH;
+  };
+
   return (
-    <div className="relative inline-block text-left">
+    <div ref={el_ref} className="relative inline-block text-left">
       <div>
         <button
           type="button"
-          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50"
+          className="relative inline-flex w-full justify-center gap-x-1.5 bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset bo hover:bg-gray-50 rounded"
           id="menu-button"
           aria-expanded="true"
           aria-haspopup="true"
@@ -50,21 +63,14 @@ export default function UserMenu(props: { user: IUserState }) {
           tabIndex={-1}
         >
           <div className="py-1" role="none">
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700"
-              role="menuitem"
-              tabIndex={-1}
-              id="menu-item-0"
-            >
-              {user.name}
-            </a>
+            <p className="block px-4 py-2 text-sm text-gray-700">{user.name}</p>
             <button
               type="submit"
-              className="block w-full px-4 py-2 text-left text-sm text-gray-700"
+              className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
               role="menuitem"
               tabIndex={-1}
               id="menu-item-3"
+              onClick={handleLogout}
             >
               Sign out
             </button>
