@@ -4,10 +4,24 @@ This is a real-time chat application built using the MERN (MongoDB, Express, Rea
 
 ## 🚀 Features
 - **Real-Time Messaging**: Messages are instantly delivered without refreshing the page.
+  <br>
+  <img width="300" alt="Instant notification" src="https://github.com/user-attachments/assets/826a4b29-5920-4c42-9d0c-ff7a44d3b199" />
+  
 - **Real-Time Notifications**: Get instant notifications when new messages arrive.
+  
 - **Typing Indicator**: See when the other user is typing.
+  <br>
+  <img width="350" alt="Typing indicator" src="https://github.com/user-attachments/assets/6cf312a8-c922-4c03-9d32-df297973760f" />
+
+  
 - **Fully Responsive**: The application is designed to work seamlessly on all screen sizes.
+  <br>
+  <img width="250" alt="mobile view" src="https://github.com/user-attachments/assets/fbeeb910-6f01-419d-be0b-04ed6dbd4cde" />
+  <img width="250" alt="mobile view" src="https://github.com/user-attachments/assets/9b54d238-d1f7-490b-83d4-366ed953b9bf" />
+  
 - **Secure Authentication**: Uses JWT-based authentication for user sessions.
+  <br>
+  <img width="250" src="https://github.com/user-attachments/assets/5c92621f-d7cd-4c36-9944-46ebd894bb66" alt="login page">
 
 ## 🏗️ Tech Stack
 ### **Frontend**
