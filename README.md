@@ -77,6 +77,43 @@ Ensure you have the following installed:
    npm run start
    ```
 
+### Setup via Docker
+#### To run the container
+  ```
+  docker-compose up --build
+  ```
+
+#### To stop the container
+  ```
+  docker-compose down
+  ```
+
+#### PS: Might need to manually create user
+1. Access the MongoDB Container:
+   ``
+   docker exec -it mongodb_server mongosh
+   ``
+2. Switch to admin database:
+   ``
+   use admin
+   ``
+3. Create a New User:
+   ```
+   db.createUser({
+      user: "", // user name you want
+      pwd: "",  // Password you want
+      roles: [{ role: "root", db: "admin" }]
+   })
+   ```
+4. This will create a root user with the admin role. After this, exit the MongoDB shell:
+   ``
+   exit
+   ``
+5. Rebuild and Restart Containers:
+   ```
+   docker-compose up build -d
+   ```
+
 The frontend will be accessible at **http://localhost:3000**, and the backend will run on **http://localhost:5000** (or your configured port).
 
 
